@@ -1,65 +1,65 @@
 package com.pastew.gdzienapiwo;
 
 import android.app.Activity;
+import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
-
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
-
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import java.util.ArrayList;
 
 public class MainActivity extends Activity {
-
-    Button getButton;
-    TextView resultTV;
-
-    @Override
+    ArrayAdapter<String> adapter;
+    ArrayList<String> items;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        initUI();
+        ListView listView=(ListView)findViewById(R.id.listv);
+        items=new ArrayList<String>();
+        adapter=new ArrayAdapter(this, R.layout.item_layout,R.id.txt,items);
+        listView.setAdapter(adapter);
     }
 
-    private void initUI() {
-        resultTV = (TextView) findViewById(R.id.result_tv);
-        getButton = (Button) findViewById(R.id.get_button);
 
-        getButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                makePostRequest();
-            }
-        });
-    }
-
-    private void makePostRequest() {
-
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url ="https://mysterious-shelf-1380.herokuapp.com/beers";
-
-        // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
-                        resultTV.setText(response);
+    public void onStart(){
+        super.onStart();
+        // Create request queue
+        RequestQueue requestQueue= Volley.newRequestQueue(this);
+        //  Create json array request
+        JsonArrayRequest jsonArrayRequest=new JsonArrayRequest("http://www.gtwebsolutions.net/kent/getoutlet.php",new Response.Listener<JSONArray>(){
+            public void onResponse(JSONArray jsonArray){
+                // Successfully download json
+                // So parse it and populate the listview
+                for(int i=0;i<jsonArray.length();i++){
+                    try {
+                        JSONObject jsonObject=jsonArray.getJSONObject(i);
+                        items.add(jsonObject.getString("owner_name"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                }, new Response.ErrorListener() {
+                }
+                adapter.notifyDataSetChanged();
+            }
+        }, new Response.ErrorListener() {
             @Override
-            public void onErrorResponse(VolleyError error) {
-                resultTV.setText("That didn't work!");
+            public void onErrorResponse(VolleyError volleyError) {
+                Log.e("Error", "Unable to parse json array");
             }
         });
-
-        // Add the request to the RequestQueue.
-        queue.add(stringRequest);
+        // add json array request to the request queue
+        requestQueue.add(jsonArrayRequest);
     }
-}
+
+} 
