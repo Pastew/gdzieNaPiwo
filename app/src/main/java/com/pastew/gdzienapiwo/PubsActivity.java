@@ -2,9 +2,20 @@ package com.pastew.gdzienapiwo;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -18,9 +29,49 @@ public class PubsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pubs);
 
+        showPubs();
+    }
+
+    private void showPubs(){
+
+
+        // Create request queue
+        RequestQueue requestQueue= Volley.newRequestQueue(this);
+        //  Create json array request
+        JsonArrayRequest jsonArrayRequest=new JsonArrayRequest("https://mysterious-shelf-1380.herokuapp.com/pubs",new Response.Listener<JSONArray>(){
+            public void onResponse(JSONArray jsonArray){
+                ArrayList<Pub> pubs =new ArrayList<>();
+                // Successfully download json
+                // So parse it and populate the listview
+                for(int i=0;i<jsonArray.length();i++){
+                    try {
+                        Pub pub = new Pub();
+
+                        JSONObject jsonObject=jsonArray.getJSONObject(i);
+                        pub.setName(jsonObject.getString("name"));
+                        pub.setAddress(jsonObject.getString("address"));
+
+                        pubs.add(pub);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                populateTable(pubs);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                Log.e("Error", "Unable to parse json array");
+            }
+        });
+        // add json array request to the request queue
+        requestQueue.add(jsonArrayRequest);
+    }
+
+    private void populateTable(ArrayList<Pub> pubs) {
         pubsTable = (TableLayout) findViewById(R.id.pubs_table);
 
-        for(Pub pub: getPubs()){
+        for (Pub pub : pubs) {
             TableRow tr = new TableRow(this);
             tr.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
 
@@ -38,27 +89,5 @@ public class PubsActivity extends Activity {
 
             pubsTable.addView(tr);
         }
-    }
-
-    private ArrayList<Pub> getPubs(){
-        ArrayList<Pub> pubs =new ArrayList<>();
-
-        ArrayList<BeerPrice> prices = new ArrayList<>();
-        prices.add(new BeerPrice(3, 5));
-        prices.add(new BeerPrice(4, 5));
-
-        pubs.add(new Pub(1, "Karlik", "Boleslawa 12", prices));
-
-        prices.add(new BeerPrice(2, 5));
-        prices.add(new BeerPrice(3, 7));
-
-        pubs.add(new Pub(1, "Disco", "Dyskotekowa 12", prices));
-
-        prices.add(new BeerPrice(5, 5));
-        prices.add(new BeerPrice(6, 7));
-
-        pubs.add(new Pub(1, "Melina", "Zulowska 12", prices));
-
-        return pubs;
     }
 }

@@ -32,6 +32,9 @@ public class Pub {
     }
 
     public float getBeerPrice() {
+        if(beerPrices == null)
+            return 0;
+        
         float result = 0;
         int votesMax = 0;
         for(BeerPrice bp : beerPrices){
@@ -46,5 +49,13 @@ public class Pub {
 
     public int getDistance() {
         return 100;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

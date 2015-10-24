@@ -41,7 +41,7 @@ public class PubActivity extends Activity {
         prices.add(new BeerPrice(3.5f, 3));
         prices.add(new BeerPrice(4, 5));
         prices.add(new BeerPrice(6, 6));
-        return new Pub(1, "Karlik", "Czarnowiejska 12", prices);
+        return new Pub(id, "Karlik", "Czarnowiejska 12", prices);
     }
 
     public class CustomComparator implements Comparator<BeerPrice> {
