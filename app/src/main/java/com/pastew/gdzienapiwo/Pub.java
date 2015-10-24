@@ -15,10 +15,6 @@ public class Pub {
 
     HashMap<String, Boolean> perks;
 
-    public Pub(){
-
-    }
-
     public Pub(int id, String name, String address, ArrayList<BeerPrice> beerPrices, HashMap<String, Boolean> perks) {
         this.id = id;
         this.name = name;
@@ -26,6 +22,8 @@ public class Pub {
         this.beerPrices = beerPrices;
         this.perks = perks;
     }
+
+    public Pub() {}
 
     public String getName() {
         return name;
@@ -81,5 +79,9 @@ public class Pub {
 
     public String getAddress() {
         return address;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

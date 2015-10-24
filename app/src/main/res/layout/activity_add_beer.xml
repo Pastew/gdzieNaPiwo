@@ -17,15 +17,6 @@
         android:layout_alignParentStart="true"
         android:layout_marginTop="93dp" />
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/pub_edit_text"
-        android:layout_alignBaseline="@+id/add_pub_label"
-        android:layout_alignBottom="@+id/add_pub_label"
-        android:layout_alignLeft="@+id/add_beer_button"
-        android:layout_alignStart="@+id/add_beer_button" />
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -52,5 +43,15 @@
         android:id="@+id/add_beer_button"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
+
+    <AutoCompleteTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#000000"
+        android:id="@+id/pub_autocomplete"
+        android:layout_alignBaseline="@+id/add_pub_label"
+        android:layout_alignBottom="@+id/add_pub_label"
+        android:layout_toRightOf="@+id/price_label"
+        android:layout_toEndOf="@+id/price_label" />
 
 </RelativeLayout>

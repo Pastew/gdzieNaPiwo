@@ -26,10 +26,9 @@ import java.util.HashMap;
 
 public class PubsActivity extends Activity {
 
-    private static final String[] PERKS = {"pool", "garden", "dancefloor", "television", "karaoke", "pool"};
     private ArrayList<View> MAINTABLES = new ArrayList<>();
     private ArrayList<View> SUBTABLES = new ArrayList<>();
-    TableLayout pubsTable;
+    private TableLayout pubsTable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +69,7 @@ public class PubsActivity extends Activity {
                         pub.setBeerPrices(beerPrices);
                         // perks
                         HashMap<String,Boolean> perks = new HashMap<>();
-                        for(String perk : PERKS) {
+                        for(String perk : Global.PERKS) {
                             perks.put(perk, jsonObject.getBoolean(perk));
                         }
                         pub.setPerks(perks);
