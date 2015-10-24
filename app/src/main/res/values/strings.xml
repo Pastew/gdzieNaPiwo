@@ -13,5 +13,8 @@
     <string name="title_activity_add_pub">AddPubActivit</string>
     <string name="pub_name_label">Nazwa pubu</string>
     <string name="address">Adres</string>
-    <string name="add_pub">Dodaj pub</string>
+    <string name="add_pub">Znalazłem fajny pub!</string>
+    <string name="add_beer">Znalazłem tanie piwko!</string>
+    <string name="map">Piwko w okolicy</string>
+    <string name="show_pubs">Wszystkie puby w mieście</string>
 </resources>
