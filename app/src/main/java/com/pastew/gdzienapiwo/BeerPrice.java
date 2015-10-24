@@ -7,6 +7,20 @@ import java.util.Currency;
  */
 public class BeerPrice {
 
-    public Currency price;
+    public float price;
     public int votes;
+
+
+    public BeerPrice(float price, int votes) {
+        this.price = price;
+        this.votes = votes;
+    }
+
+    public float getPrice() {
+        return price;
+    }
+
+    public int getVotes() {
+        return votes;
+    }
 }
