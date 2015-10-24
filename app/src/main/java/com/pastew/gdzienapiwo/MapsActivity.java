@@ -43,10 +43,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
 public class MapsActivity extends FragmentActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
+
+
+    double closestDistance=10000000;
+    double a,b;
+
 
     public static final String TAG = MapsActivity.class.getSimpleName();
 
@@ -84,7 +91,8 @@ public class MapsActivity extends FragmentActivity implements
 
 
 
-        this.onSearch();
+
+
 
 
     }
@@ -145,6 +153,8 @@ public class MapsActivity extends FragmentActivity implements
 
         //********************************************* Ustawienia MARKERA.png **************************
         View marker = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.custom_marker_layout, null);
+        View closestMarker = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.closest_marker_layout, null);
+
         TextView markerText = (TextView) marker.findViewById(R.id.marker_text);
        // markerText.setText("27");
 
@@ -158,6 +168,7 @@ public class MapsActivity extends FragmentActivity implements
         BitmapDescriptor bitmapMarker;
         bitmapMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
 
+        List<MarkerOptions> markerOptionsList=new ArrayList<>();
         List<String> location=new ArrayList<>();
 
         location.add(0, "Biprostal, Kraków");
@@ -182,10 +193,14 @@ public class MapsActivity extends FragmentActivity implements
 
                     markerText.setText(i+",5");
 
-                    mMap.addMarker(new MarkerOptions().position(latLng).title(location.get(i)).snippet("Kilka \n linijek \n opisu\n ---------------\n i jeszcze wiecej")
+                    markerOptionsList.add(i,new MarkerOptions().position(latLng).title(location.get(i)).snippet("Kilka \n linijek \n opisu\n ---------------\n i jeszcze wiecej")
                             .icon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(this, marker))));
 
+                    mMap.addMarker(markerOptionsList.get(i));
 
+                   // markerOptionsList.get(i).icon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(this, closestMarker)));
+
+                   // mMap.addMarker(markerOptionsList.get(i));
                     mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
                 }
 
@@ -193,7 +208,10 @@ public class MapsActivity extends FragmentActivity implements
                 e.printStackTrace();
             }
 
+
         }
+
+        closestMark(markerOptionsList, closestMarker);
     }
 
 
@@ -249,6 +267,7 @@ public class MapsActivity extends FragmentActivity implements
      */
     private void setUpMap() {
      //   mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+
     }
 
     private void handleNewLocation(Location location) {
@@ -263,7 +282,13 @@ public class MapsActivity extends FragmentActivity implements
         double currentLatitude = location.getLatitude();
         double currentLongitude = location.getLongitude();
 
+        a=currentLatitude;
+        b=currentLongitude;
+
+        this.onSearch();
+
         LatLng latLng = new LatLng(currentLatitude, currentLongitude);
+
 
         //mMap.addMarker(new MarkerOptions().position(new LatLng(currentLatitude, currentLongitude)).title("Current Location"));
         MarkerOptions options = new MarkerOptions()
@@ -273,11 +298,13 @@ public class MapsActivity extends FragmentActivity implements
        // mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         float zoomLevel = 16.0f; //This goes up to 21
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel));
+
+
     }
 
     @Override
     public void onConnected(Bundle bundle) {
-        Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+         Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (location == null) {
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         }
@@ -330,4 +357,49 @@ public class MapsActivity extends FragmentActivity implements
         return Location.convert(location.getLatitude(), Location.FORMAT_DEGREES) + " " + Location.convert(location.getLongitude(), Location.FORMAT_DEGREES);
     }
 
+    public void closestMark(List<MarkerOptions> markerOptionsList,  View closestMarker) {
+
+
+
+        int R;
+        double x,y, distance;
+//        double currentLatitude = tempLocation.getLatitude();
+//        double currentLongitude = tempLocation.getLongitude();
+//
+//        LatLng latLng = new LatLng(currentLatitude, currentLongitude);
+        LatLng latLngList;
+
+        int closestNumber=0;
+
+        Log.i("closestNumber", "wbijam do obliczania najblizszego");
+
+        for(int i=0; i<markerOptionsList.size(); i++){
+
+            latLngList=markerOptionsList.get(i).getPosition();
+
+            R = 6371; // km
+            x = (latLngList.longitude - b) * Math.cos((a + latLngList.latitude) / 2);
+            y = (latLngList.latitude - a);
+            distance = Math.sqrt(x * x + y * y) * R;
+
+            Log.i("distance", ""+distance);
+
+            if(distance<closestDistance){
+                closestNumber=i;
+
+                closestDistance=distance;
+                Log.i("closestNumber", ""+i);
+            }
+
+        }
+
+
+        markerOptionsList.get(closestNumber).icon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(this, closestMarker)));
+
+        mMap.addMarker(markerOptionsList.get(closestNumber));
+
+
+        Log.i("ab"," "+a);
+        Log.i("ab"," "+b);
+    }
 }
