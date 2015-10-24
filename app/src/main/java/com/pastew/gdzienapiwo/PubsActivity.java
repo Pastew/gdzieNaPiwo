@@ -118,6 +118,7 @@ public class PubsActivity extends Activity {
                   //  continue;
 
                 CheckBox perk = new CheckBox(this);
+                perk.setClickable(false);
                 perk.setText(key); // TODO dodaj do strings.xml
                 perk.setChecked(value);
                 ll1.addView(perk);
