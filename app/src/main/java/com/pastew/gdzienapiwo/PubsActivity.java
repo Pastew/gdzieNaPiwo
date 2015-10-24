@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.TranslateAnimation;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
@@ -42,8 +40,6 @@ public class PubsActivity extends Activity {
     }
 
     private void showPubs(){
-
-
         // Create request queue
         RequestQueue requestQueue= Volley.newRequestQueue(this);
         //  Create json array request
@@ -56,10 +52,22 @@ public class PubsActivity extends Activity {
                     try {
                         Pub pub = new Pub();
 
+                        //name, address
                         JSONObject jsonObject=jsonArray.getJSONObject(i);
                         pub.setName(jsonObject.getString("name"));
                         pub.setAddress(jsonObject.getString("address"));
 
+                        //prices
+                        ArrayList<BeerPrice> beerPrices = new ArrayList<>();
+                        JSONArray beerPricesJson = jsonObject.getJSONArray("beer_prices");
+                        for(int j = 0 ; j < beerPricesJson.length() ; ++j){
+                            JSONObject beer_price = beerPricesJson.getJSONObject(j);
+                            float price = (float) beer_price.getDouble("price");
+                            int votes = beer_price.getInt("votes");
+                            beerPrices.add(new BeerPrice(price, votes));
+                        }
+
+                        pub.setBeerPrices(beerPrices);
                         // perks
                         HashMap<String,Boolean> perks = new HashMap<>();
                         for(String perk : PERKS) {
@@ -121,6 +129,12 @@ public class PubsActivity extends Activity {
             TableRow trSub = new TableRow(this);
             LinearLayout ll1 = new LinearLayout(this);
             ll1.setOrientation(LinearLayout.VERTICAL);
+
+            // address
+            TextView address = new TextView(this);
+            address.setTextAppearance(getApplicationContext(), R.style.pub_address );
+            address.setText(pub.getAddress());
+            ll1.addView(address);
 
             for(HashMap.Entry<String, Boolean> entry : pub.getPerks().entrySet()){
                 String key = entry.getKey();

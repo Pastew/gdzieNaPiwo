@@ -74,4 +74,12 @@ public class Pub {
     public int getId() {
         return id;
     }
+
+    public void setBeerPrices(ArrayList<BeerPrice> prices) {
+        this.beerPrices = prices;
+    }
+
+    public String getAddress() {
+        return address;
+    }
 }
