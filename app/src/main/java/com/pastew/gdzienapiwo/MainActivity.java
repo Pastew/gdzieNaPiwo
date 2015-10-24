@@ -24,43 +24,20 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class MainActivity extends Activity {
-    ArrayAdapter<String> adapter;
-    ArrayList<String> items;
-    Button getBeersButton;
-    Button pubButton;
     Button pubsButton;
+    Button addBeerButton;
+    Button addPubButton;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ListView listView=(ListView)findViewById(R.id.listv);
-        items=new ArrayList<String>();
-        adapter=new ArrayAdapter(this, R.layout.item_layout,R.id.txt,items);
-        listView.setAdapter(adapter);
-
         initUI();
     }
 
     private void initUI() {
-        getBeersButton = (Button) findViewById(R.id.get_beers_button);
-        pubButton = (Button) findViewById(R.id.pub_button);
+        addBeerButton = (Button) findViewById(R.id.add_beer_test_button);
+        addPubButton = (Button) findViewById(R.id.add_pub_test_button);
         pubsButton = (Button) findViewById(R.id.pubs_button);
-        getBeersButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                makeRequest();
-            }
-        });
-
-        pubButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(MainActivity.this, PubActivity.class);
-                i.putExtra("id", "1");
-                startActivity(i);
-            }
-        });
-
         pubsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,38 +45,26 @@ public class MainActivity extends Activity {
                 startActivity(i);
             }
         });
+
+        addBeerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(MainActivity.this, AddBeerActivity.class);
+                startActivity(i);
+            }
+        });
+
+        addPubButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(MainActivity.this, AddPubActivity.class);
+                startActivity(i);
+            }
+        });
     }
 
     public void onStart(){
         super.onStart();
-    }
-
-    private void makeRequest() {
-        // Create request queue
-        RequestQueue requestQueue= Volley.newRequestQueue(this);
-        //  Create json array request
-        JsonArrayRequest jsonArrayRequest=new JsonArrayRequest("http://www.gtwebsolutions.net/kent/getoutlet.php",new Response.Listener<JSONArray>(){
-            public void onResponse(JSONArray jsonArray){
-                // Successfully download json
-                // So parse it and populate the listview
-                for(int i=0;i<jsonArray.length();i++){
-                    try {
-                        JSONObject jsonObject=jsonArray.getJSONObject(i);
-                        items.add(jsonObject.getString("owner_name"));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-                adapter.notifyDataSetChanged();
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
-                Log.e("Error", "Unable to parse json array");
-            }
-        });
-        // add json array request to the request queue
-        requestQueue.add(jsonArrayRequest);
     }
 
     public void gotoMap(View view) {

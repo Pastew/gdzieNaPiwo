@@ -40,12 +40,16 @@
             android:label="@string/title_activity_maps" >
         </activity>
         <activity
-            android:name=".PubActivity"
-            android:label="@string/title_activity_pub" >
-        </activity>
-        <activity
             android:name=".PubsActivity"
             android:label="@string/title_activity_pubs" >
+        </activity>
+        <activity
+            android:name=".AddBeerActivity"
+            android:label="@string/title_activity_add_beer" >
+        </activity>
+        <activity
+            android:name=".AddPubActivity"
+            android:label="@string/title_activity_add_pub" >
         </activity>
     </application>
 

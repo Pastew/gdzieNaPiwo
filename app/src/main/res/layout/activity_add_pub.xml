@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"  android:layout_height="fill_parent"
+    android:background="@color/background">
+
+    <TableRow>
+        <TextView android:text="@string/pub_name_label"
+            android:layout_width="wrap_content"  android:layout_height="wrap_content" />
+
+        <EditText android:id="@+id/add_pub_name_et"
+            android:layout_width="match_parent"  android:layout_height="wrap_content" />
+    </TableRow>
+
+    <TableRow>
+        <TextView android:text="@string/address"
+            android:layout_width="wrap_content"  android:layout_height="wrap_content" />
+
+        <EditText android:id="@+id/add_pub_address_et"
+            android:layout_width="match_parent"  android:layout_height="wrap_content" />
+    </TableRow>
+
+    <TableRow>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/add_pub_button"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/add_pub">
+        </Button>
+    </TableRow>
+
+    <TableRow>
+        <LinearLayout
+            android:id="@+id/add_pub_perks_ll"
+            android:orientation="vertical">
+        </LinearLayout>
+    </TableRow>
+</TableLayout>

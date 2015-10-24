@@ -1,6 +1,9 @@
 package com.pastew.gdzienapiwo;
 
 import android.app.Activity;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -26,10 +29,9 @@ import java.util.HashMap;
 
 public class PubsActivity extends Activity {
 
-    private static final String[] PERKS = {"pool", "garden", "dancefloor", "television", "karaoke", "pool"};
     private ArrayList<View> MAINTABLES = new ArrayList<>();
     private ArrayList<View> SUBTABLES = new ArrayList<>();
-    TableLayout pubsTable;
+    private TableLayout pubsTable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +72,7 @@ public class PubsActivity extends Activity {
                         pub.setBeerPrices(beerPrices);
                         // perks
                         HashMap<String,Boolean> perks = new HashMap<>();
-                        for(String perk : PERKS) {
+                        for(String perk : Global.PERKS) {
                             perks.put(perk, jsonObject.getBoolean(perk));
                         }
                         pub.setPerks(perks);
@@ -157,10 +159,11 @@ public class PubsActivity extends Activity {
             LinearLayout ll3 = new LinearLayout(this);
             ll3.setOrientation(LinearLayout.VERTICAL);
 
+            /*
             TextView map = new TextView(this);
             map.setText("MAP");
             ll3.addView(map);
-
+*/
             trSub.addView(ll3);
 
             trSub.setVisibility(View.GONE);
