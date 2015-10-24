@@ -3,6 +3,8 @@ package com.pastew.gdzienapiwo;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -18,10 +20,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class PubsActivity extends Activity {
 
+    private static final String[] PERKS = {"pool", "garden", "dancefloor", "television", "karaoke", "pool"};
     TableLayout pubsTable;
 
     @Override
@@ -50,6 +54,13 @@ public class PubsActivity extends Activity {
                         JSONObject jsonObject=jsonArray.getJSONObject(i);
                         pub.setName(jsonObject.getString("name"));
                         pub.setAddress(jsonObject.getString("address"));
+
+                        // perks
+                        HashMap<String,Boolean> perks = new HashMap<>();
+                        for(String perk : PERKS) {
+                            perks.put(perk, jsonObject.getBoolean(perk));
+                        }
+                        pub.setPerks(perks);
 
                         pubs.add(pub);
                     } catch (JSONException e) {
@@ -88,6 +99,39 @@ public class PubsActivity extends Activity {
             tr.addView(distance);
 
             pubsTable.addView(tr);
+
+            // ====== sub additional info =======
+            // first column of sub table
+            TableRow trSub = new TableRow(this);
+            LinearLayout ll1 = new LinearLayout(this);
+            ll1.setOrientation(LinearLayout.VERTICAL);
+
+            for(HashMap.Entry<String, Boolean> entry : pub.getPerks().entrySet()){
+                String key = entry.getKey();
+                boolean value = entry.getValue();
+
+                //don't add empty perks
+                //if(!value)
+                  //  continue;
+
+                CheckBox perk = new CheckBox(this);
+                perk.setText(key); // TODO dodaj do strings.xml
+                perk.setChecked(value);
+                ll1.addView(perk);
+            }
+
+            trSub.addView(ll1);
+
+            // third col - map link
+            LinearLayout ll3 = new LinearLayout(this);
+            ll3.setOrientation(LinearLayout.VERTICAL);
+
+            TextView map = new TextView(this);
+            map.setText("MAP");
+            ll3.addView(map);
+
+            trSub.addView(ll3);
+            pubsTable.addView(trSub);
         }
     }
 }

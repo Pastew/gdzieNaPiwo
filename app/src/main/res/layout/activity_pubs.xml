@@ -8,8 +8,65 @@
 
     <TableLayout
         android:id="@+id/pubs_table"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"></TableLayout>
+        android:stretchColumns="*"
+        android:layout_centerHorizontal="true">
+        <TableRow>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Karlik"
+                android:id="@+id/textVsiew"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="4.5"
+                android:id="@+id/textView"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="200m"
+                android:id="@+id/textdView"/>
+        </TableRow>
+
+        <TableRow
+            android:visibility="visible">
+            <LinearLayout
+                android:orientation="vertical">
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Bilard"
+                    android:id="@+id/checkBox"
+                    android:clickable="false"/>
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ogródek"
+                    android:id="@+id/checkB2ox"
+                    android:clickable="false"/>
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="vertical">
+
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="MAP"
+                    android:id="@+id/asd"/>
+            </LinearLayout>
+
+        </TableRow>
+
+    </TableLayout>
 
 </RelativeLayout>

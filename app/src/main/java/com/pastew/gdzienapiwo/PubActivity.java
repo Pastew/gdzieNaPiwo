@@ -10,6 +10,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 
 
 public class PubActivity extends Activity {
@@ -41,7 +42,10 @@ public class PubActivity extends Activity {
         prices.add(new BeerPrice(3.5f, 3));
         prices.add(new BeerPrice(4, 5));
         prices.add(new BeerPrice(6, 6));
-        return new Pub(id, "Karlik", "Czarnowiejska 12", prices);
+        HashMap<String, Boolean> perks = new HashMap<>();
+        perks.put("pool", true);
+        perks.put("pool", true);
+        return new Pub(id, "Karlik", "Czarnowiejska 12", prices, perks);
     }
 
     public class CustomComparator implements Comparator<BeerPrice> {

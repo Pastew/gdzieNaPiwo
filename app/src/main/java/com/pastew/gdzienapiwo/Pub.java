@@ -1,7 +1,7 @@
 package com.pastew.gdzienapiwo;
 
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.HashMap;
 
 /**
  * Created by Pastew on 2015-10-24.
@@ -12,15 +12,19 @@ public class Pub {
     private String address;
     private ArrayList<BeerPrice> beerPrices;
 
+
+    HashMap<String, Boolean> perks;
+
     public Pub(){
 
     }
 
-    public Pub(int id, String name, String address, ArrayList<BeerPrice> beerPrices) {
+    public Pub(int id, String name, String address, ArrayList<BeerPrice> beerPrices, HashMap<String, Boolean> perks) {
         this.id = id;
         this.name = name;
         this.address = address;
         this.beerPrices = beerPrices;
+        this.perks = perks;
     }
 
     public String getName() {
@@ -34,7 +38,7 @@ public class Pub {
     public float getBeerPrice() {
         if(beerPrices == null)
             return 0;
-        
+
         float result = 0;
         int votesMax = 0;
         for(BeerPrice bp : beerPrices){
@@ -45,6 +49,14 @@ public class Pub {
         }
 
         return result;
+    }
+
+    public HashMap<String, Boolean> getPerks(){
+        return perks;
+    }
+
+    public void setPerks(HashMap<String, Boolean> perks) {
+        this.perks = perks;
     }
 
     public int getDistance() {
@@ -58,4 +70,5 @@ public class Pub {
     public void setAddress(String address) {
         this.address = address;
     }
+
 }
