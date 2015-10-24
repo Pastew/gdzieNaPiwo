@@ -47,6 +47,10 @@
             android:name=".PubsActivity"
             android:label="@string/title_activity_pubs" >
         </activity>
+        <activity
+            android:name=".AddBeerActivity"
+            android:label="@string/title_activity_add_beer" >
+        </activity>
     </application>
 
 </manifest>
