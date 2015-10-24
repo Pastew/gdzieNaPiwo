@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.IntentSender;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -13,9 +15,11 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsoluteLayout;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -30,6 +34,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 
@@ -105,6 +110,40 @@ public class MapsActivity extends FragmentActivity implements
     public void onSearch()
     {
 
+        //******************************************* snippet several line settings ****************
+        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+
+            @Override
+            public View getInfoWindow(Marker arg0) {
+                return null;
+            }
+
+            @Override
+            public View getInfoContents(Marker marker) {
+
+                Context mContext = getApplicationContext();
+
+                LinearLayout info = new LinearLayout(mContext);
+                info.setOrientation(LinearLayout.VERTICAL);
+
+                TextView title = new TextView(mContext);
+                title.setTextColor(Color.BLACK);
+                title.setGravity(Gravity.CENTER);
+                title.setTypeface(null, Typeface.BOLD);
+                title.setText(marker.getTitle());
+
+                TextView snippet = new TextView(mContext);
+                snippet.setTextColor(Color.GRAY);
+                snippet.setText(marker.getSnippet());
+
+                info.addView(title);
+                info.addView(snippet);
+
+                return info;
+            }
+        });
+
+        //********************************************* Ustawienia MARKERA.png **************************
         View marker = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.custom_marker_layout, null);
         TextView markerText = (TextView) marker.findViewById(R.id.marker_text);
        // markerText.setText("27");
@@ -112,6 +151,7 @@ public class MapsActivity extends FragmentActivity implements
         int height_in_pixels = markerText.getLineCount() * markerText.getLineHeight(); //approx height text
      //   markerText.setHeight(30);
 
+        //**********************************************************************************************************
 
         Address address;
         LatLng latLng;
@@ -142,7 +182,7 @@ public class MapsActivity extends FragmentActivity implements
 
                     markerText.setText(i+",5");
 
-                    mMap.addMarker(new MarkerOptions().position(latLng).title(location.get(i)).snippet("Description")
+                    mMap.addMarker(new MarkerOptions().position(latLng).title(location.get(i)).snippet("Kilka \n linijek \n opisu\n ---------------\n i jeszcze wiecej")
                             .icon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(this, marker))));
 
 
@@ -152,15 +192,6 @@ public class MapsActivity extends FragmentActivity implements
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-
-//            for(int counter=0; counter<addressList.size(); counter++) {
-//                address = addressList.get(counter);
-//                Log.i("Adresy", address.toString()+"\n");
-//                latLng = new LatLng(address.getLatitude(), address.getLongitude());
-//                mMap.addMarker(new MarkerOptions().position(latLng).title("Marker"));
-//                mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-//            }
 
         }
     }
@@ -224,6 +255,7 @@ public class MapsActivity extends FragmentActivity implements
         Log.d(TAG, location.toString());
         Log.d("Lokacja", location.toString());
 
+        // conversion to simple coordinate
         String goodFormatLocation=locationStringFromLocation(location);
         Log.d("Lokacja22", goodFormatLocation);
 
@@ -238,7 +270,9 @@ public class MapsActivity extends FragmentActivity implements
                 .position(latLng)
                 .title("I am here!");
         mMap.addMarker(options);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+       // mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        float zoomLevel = 16.0f; //This goes up to 21
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel));
     }
 
     @Override
@@ -291,7 +325,7 @@ public class MapsActivity extends FragmentActivity implements
         handleNewLocation(location);
     }
 
-
+    // conversion to simple coordinate
     public  String locationStringFromLocation(final Location location) {
         return Location.convert(location.getLatitude(), Location.FORMAT_DEGREES) + " " + Location.convert(location.getLongitude(), Location.FORMAT_DEGREES);
     }
