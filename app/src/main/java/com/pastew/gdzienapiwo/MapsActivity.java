@@ -2,11 +2,16 @@ package com.pastew.gdzienapiwo;
 
 
 import android.content.IntentSender;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
 
+import com.android.volley.toolbox.StringRequest;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -16,7 +21,12 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements
         GoogleApiClient.ConnectionCallbacks,
@@ -56,6 +66,12 @@ public class MapsActivity extends FragmentActivity implements
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(10 * 1000)        // 10 seconds, in milliseconds
                 .setFastestInterval(1 * 1000); // 1 second, in milliseconds
+
+
+
+        this.onSearch();
+
+
     }
 
     @Override
@@ -74,6 +90,50 @@ public class MapsActivity extends FragmentActivity implements
             mGoogleApiClient.disconnect();
         }
     }
+
+
+    public void onSearch()
+    {
+
+        Address address;
+        LatLng latLng;
+
+        List<String> location=new ArrayList<>();
+
+        location.add(0, "Biprostal, Kraków");
+        location.add(1,"AGH, Kraków");
+        location.add(2,"ul.Bytomska, Kraków");
+
+        List<Address> addressList = null;
+        if(!location.isEmpty())
+        {
+            Geocoder geocoder = new Geocoder(this);
+            try {
+
+                for(int i=0; i<location.size(); i++) {
+                    addressList = geocoder.getFromLocationName(location.get(i), 1);
+                    address = addressList.get(0);
+                    latLng = new LatLng(address.getLatitude(), address.getLongitude());
+                    mMap.addMarker(new MarkerOptions().position(latLng).title("marker"));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+//            for(int counter=0; counter<addressList.size(); counter++) {
+//                address = addressList.get(counter);
+//                Log.i("Adresy", address.toString()+"\n");
+//                latLng = new LatLng(address.getLatitude(), address.getLongitude());
+//                mMap.addMarker(new MarkerOptions().position(latLng).title("Marker"));
+//                mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+//            }
+
+        }
+    }
+
 
     /**
      * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
@@ -110,7 +170,7 @@ public class MapsActivity extends FragmentActivity implements
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+     //   mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
     }
 
     private void handleNewLocation(Location location) {
