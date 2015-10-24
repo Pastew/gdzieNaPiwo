@@ -1,6 +1,9 @@
 package com.pastew.gdzienapiwo;
 
 import android.app.Activity;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -156,10 +159,11 @@ public class PubsActivity extends Activity {
             LinearLayout ll3 = new LinearLayout(this);
             ll3.setOrientation(LinearLayout.VERTICAL);
 
+            /*
             TextView map = new TextView(this);
             map.setText("MAP");
             ll3.addView(map);
-
+*/
             trSub.addView(ll3);
 
             trSub.setVisibility(View.GONE);
