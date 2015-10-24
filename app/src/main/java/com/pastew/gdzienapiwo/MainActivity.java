@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -25,6 +26,8 @@ import java.util.ArrayList;
 public class MainActivity extends Activity {
     ArrayAdapter<String> adapter;
     ArrayList<String> items;
+    Button getBeersButton;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -32,11 +35,26 @@ public class MainActivity extends Activity {
         items=new ArrayList<String>();
         adapter=new ArrayAdapter(this, R.layout.item_layout,R.id.txt,items);
         listView.setAdapter(adapter);
+
+        initUI();
     }
 
+    private void initUI() {
+        getBeersButton = (Button) findViewById(R.id.get_beers_button);
+
+        getBeersButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                makeRequest();
+            }
+        });
+    }
 
     public void onStart(){
         super.onStart();
+    }
+
+    private void makeRequest() {
         // Create request queue
         RequestQueue requestQueue= Volley.newRequestQueue(this);
         //  Create json array request

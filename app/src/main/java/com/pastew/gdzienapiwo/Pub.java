@@ -7,10 +7,22 @@ import java.util.ArrayList;
  */
 public class Pub {
     private int id;
-    private ArrayList<BeerPrice> beerPrices;
+    private String name;
     private String address;
+    private ArrayList<BeerPrice> beerPrices;
 
     public Pub(){
 
+    }
+
+    public Pub(int id, String name, String address, ArrayList<BeerPrice> beerPrices) {
+        this.id = id;
+        this.name = name;
+        this.address = address;
+        this.beerPrices = beerPrices;
+    }
+
+    public String getName() {
+        return name;
     }
 }
