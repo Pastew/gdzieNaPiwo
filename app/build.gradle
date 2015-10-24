@@ -24,4 +24,5 @@ dependencies {
     compile project(':Volley')
     compile 'com.android.support:appcompat-v7:22.0.1'
     compile 'com.google.android.gms:play-services:8.1.0'
+    compile 'com.google.maps.android:android-maps-utils:0.4+'
 }

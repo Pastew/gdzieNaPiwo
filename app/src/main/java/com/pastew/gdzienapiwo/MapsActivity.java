@@ -1,17 +1,24 @@
 package com.pastew.gdzienapiwo;
 
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.IntentSender;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.AbsoluteLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
-import com.android.volley.toolbox.StringRequest;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -20,9 +27,12 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -95,14 +105,29 @@ public class MapsActivity extends FragmentActivity implements
     public void onSearch()
     {
 
+        View marker = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.custom_marker_layout, null);
+        TextView markerText = (TextView) marker.findViewById(R.id.marker_text);
+       // markerText.setText("27");
+
+        int height_in_pixels = markerText.getLineCount() * markerText.getLineHeight(); //approx height text
+     //   markerText.setHeight(30);
+
+
         Address address;
         LatLng latLng;
+        BitmapDescriptor bitmapMarker;
+        bitmapMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
 
         List<String> location=new ArrayList<>();
 
         location.add(0, "Biprostal, Kraków");
         location.add(1,"AGH, Kraków");
         location.add(2,"ul.Bytomska, Kraków");
+        location.add(3, "Warszawa");
+        location.add(4, "Sopot");
+        location.add(5, "Rzeszow");
+        location.add(6, "Bialystok");
+
 
         List<Address> addressList = null;
         if(!location.isEmpty())
@@ -114,7 +139,13 @@ public class MapsActivity extends FragmentActivity implements
                     addressList = geocoder.getFromLocationName(location.get(i), 1);
                     address = addressList.get(0);
                     latLng = new LatLng(address.getLatitude(), address.getLongitude());
-                    mMap.addMarker(new MarkerOptions().position(latLng).title("marker"));
+
+                    markerText.setText(i+",5");
+
+                    mMap.addMarker(new MarkerOptions().position(latLng).title(location.get(i)).snippet("Description")
+                            .icon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(this, marker))));
+
+
                     mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
                 }
 
@@ -134,6 +165,22 @@ public class MapsActivity extends FragmentActivity implements
         }
     }
 
+
+
+    public static Bitmap createDrawableFromView(Context context, View view) {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        view.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, AbsoluteLayout.LayoutParams.WRAP_CONTENT));
+        view.measure(displayMetrics.widthPixels, displayMetrics.heightPixels);
+        view.layout(0, 0, displayMetrics.widthPixels, displayMetrics.heightPixels);
+        view.buildDrawingCache();
+        Bitmap bitmap = Bitmap.createBitmap(view.getMeasuredWidth(), view.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(bitmap);
+        view.draw(canvas);
+
+        return bitmap;
+    }
 
     /**
      * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
