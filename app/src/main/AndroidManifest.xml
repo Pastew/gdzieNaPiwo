@@ -43,6 +43,10 @@
             android:name=".PubActivity"
             android:label="@string/title_activity_pub" >
         </activity>
+        <activity
+            android:name=".PubsActivity"
+            android:label="@string/title_activity_pubs" >
+        </activity>
     </application>
 
 </manifest>

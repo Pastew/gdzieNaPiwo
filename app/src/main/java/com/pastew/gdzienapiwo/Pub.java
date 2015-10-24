@@ -30,4 +30,21 @@ public class Pub {
     public ArrayList<BeerPrice> getBeerPrices() {
         return beerPrices;
     }
+
+    public float getBeerPrice() {
+        float result = 0;
+        int votesMax = 0;
+        for(BeerPrice bp : beerPrices){
+            if(bp.getVotes() > votesMax){
+                votesMax = bp.getVotes();
+                result = bp.getPrice();
+            }
+        }
+
+        return result;
+    }
+
+    public int getDistance() {
+        return 100;
+    }
 }

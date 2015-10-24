@@ -7,4 +7,5 @@
     <string name="title_activity_pub">PubActivity</string>
     <string name="pub_name">Nazwa</string>
     <string name="pool">Bilard</string>
+    <string name="title_activity_pubs">PubsActivity</string>
 </resources>
