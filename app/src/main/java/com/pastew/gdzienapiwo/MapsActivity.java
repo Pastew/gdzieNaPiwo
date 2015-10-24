@@ -127,128 +127,7 @@ public class MapsActivity extends FragmentActivity implements
     public void onSearch()
     {
 
-        //******************************************* snippet several line settings ****************
-        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-
-            @Override
-            public View getInfoWindow(Marker arg0) {
-                return null;
-            }
-
-            @Override
-            public View getInfoContents(Marker marker) {
-
-                Context mContext = getApplicationContext();
-
-                LinearLayout info = new LinearLayout(mContext);
-                info.setOrientation(LinearLayout.VERTICAL);
-
-                TextView title = new TextView(mContext);
-                title.setTextColor(Color.BLACK);
-                title.setGravity(Gravity.CENTER);
-                title.setTypeface(null, Typeface.BOLD);
-                title.setText(marker.getTitle());
-
-                TextView snippet = new TextView(mContext);
-                snippet.setTextColor(Color.GRAY);
-                snippet.setText(marker.getSnippet());
-
-                info.addView(title);
-                info.addView(snippet);
-
-
-                return info;
-            }
-        });
-
-        //********************************************* Ustawienia MARKERA.png **************************
-        View marker = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.custom_marker_layout, null);
-        View closestMarker = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.closest_marker_layout, null);
-
-        TextView markerText = (TextView) marker.findViewById(R.id.marker_text);
-       // markerText.setText("27");
-
-        int height_in_pixels = markerText.getLineCount() * markerText.getLineHeight(); //approx height text
-     //   markerText.setHeight(30);
-
-        //**********************************************************************************************************
-
-        bitmap=createDrawableFromView(this,marker);
-        BitmapDescriptor bitmapDescriptor=BitmapDescriptorFactory.fromBitmap(bitmap);
-        Address address;
-        LatLng latLng;
-
-
-        List<MarkerOptions> markerOptionsList=new ArrayList<>();
-        //List<String> location=new ArrayList<>();
-
-        List<Pub> pubList=new ArrayList<>();
-        pubList=getPubs();
-
-//        location.add(0, "Biprostal, Kraków");
-//        location.add(1,"AGH, Kraków");
-//        location.add(2,"ul.Bytomska, Kraków");
-//        location.add(3, "Warszawa");
-//        location.add(4, "Sopot");
-//        location.add(5, "Rzeszow");
-//        location.add(6, "Mielno");
-//
-//        location.add(7, "Bialystok");
-//        location.add(8, "Wadowice");
-//        location.add(9, "Kalwaria Zebrzydowska");
-//        location.add(10, "Wroclaw");
-//        location.add(11, "Katowice");
-//        location.add(12, "Tarnow");
-//        location.add(13, "Zakopane");
-//        location.add(14, "Kolobrzeg");
-//        location.add(15, "Inowroclaw");
-//        location.add(16, "Zielona Gora");
-//        location.add(17, "Dietla, Krakow");
-//        location.add(18, "Rondo Matecznego, Krakow");
-//        location.add(19, "Mogilany, Krakow");
-//        location.add(20, "Kazimierz, Krakow");
-//        location.add(21, "Jubilat, Krakow");
-//        location.add(22, "Urzednicza, Krakow");
-//        location.add(23, "Plac Wszystki Swietych, Krakow");
-//        location.add(24, "Cracovia, Krakow");
-//        location.add(25, "Radocza");
-//        location.add(26, "Dabie, Krakow");
-//        location.add(27, "Wieczysta, Krakow");
-//        location.add(28, "Zablocie, Krakow");
-//        location.add(29, "Galeria Krakowska");
-//        location.add(30, "Szczyrk");
-
-
-        List<Address> addressList = null;
-        if(!pubList.isEmpty())
-        {
-            Geocoder geocoder = new Geocoder(this);
-            try {
-
-                for(int i=0; i<pubList.size(); i++) {
-                    addressList = geocoder.getFromLocationName(pubList.get(i).getAddress(), 1);
-                    address = addressList.get(0);
-                    latLng = new LatLng(address.getLatitude(), address.getLongitude());
-
-                    markerText.setText(i+",5");
-
-                    markerOptionsList.add(i,new MarkerOptions().position(latLng).title(pubList.get(i).getAddress()).snippet("Kilka \n linijek \n opisu\n ---------------\n i jeszcze wiecej")
-                            .icon(bitmapDescriptor));
-
-                    mMap.addMarker(markerOptionsList.get(i));
-
-                   // markerOptionsList.get(i).icon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(this, closestMarker)));
-
-                   // mMap.addMarker(markerOptionsList.get(i));
-                    mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-
-        }
+        getPubs();
 
         //closestMark(markerOptionsList, closestMarker);
     }
@@ -263,7 +142,6 @@ public class MapsActivity extends FragmentActivity implements
         view.layout(0, 0, displayMetrics.widthPixels, displayMetrics.heightPixels);
         view.buildDrawingCache();
          Bitmap  bitmap = Bitmap.createBitmap(view.getMeasuredWidth(), view.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
-        bitmap.recycle();
         Canvas canvas = new Canvas(bitmap);
         view.draw(canvas);
 
@@ -439,11 +317,11 @@ public class MapsActivity extends FragmentActivity implements
 
 
         Log.i("ab"," "+a);
-        Log.i("ab"," "+b);
+        Log.i("ab", " " + b);
     }
 
     ArrayList<Pub> pubs;
-    public ArrayList<Pub> getPubs(){
+    public void getPubs(){
 
          pubs = new ArrayList<>();
 
@@ -487,7 +365,7 @@ public class MapsActivity extends FragmentActivity implements
                         e.printStackTrace();
                     }
                 }
-
+                populateMarks();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -495,6 +373,95 @@ public class MapsActivity extends FragmentActivity implements
                 Log.e("Error", "Unable to parse json array");
             }
         });
-        return pubs;
+        requestQueue.add(jsonArrayRequest);
+    }
+
+    private void populateMarks() {
+
+        //******************************************* snippet several line settings ****************
+        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+
+            @Override
+            public View getInfoWindow(Marker arg0) {
+                return null;
+            }
+
+            @Override
+            public View getInfoContents(Marker marker) {
+
+                Context mContext = getApplicationContext();
+
+                LinearLayout info = new LinearLayout(mContext);
+                info.setOrientation(LinearLayout.VERTICAL);
+
+                TextView title = new TextView(mContext);
+                title.setTextColor(Color.BLACK);
+                title.setGravity(Gravity.CENTER);
+                title.setTypeface(null, Typeface.BOLD);
+                title.setText(marker.getTitle());
+
+                TextView snippet = new TextView(mContext);
+                snippet.setTextColor(Color.GRAY);
+                snippet.setText(marker.getSnippet());
+
+                info.addView(title);
+                info.addView(snippet);
+
+
+                return info;
+            }
+        });
+
+        //********************************************* Ustawienia MARKERA.png **************************
+        View marker = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.custom_marker_layout, null);
+        View closestMarker = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.closest_marker_layout, null);
+
+        TextView markerText = (TextView) marker.findViewById(R.id.marker_text);
+        // markerText.setText("27");
+
+        int height_in_pixels = markerText.getLineCount() * markerText.getLineHeight(); //approx height text
+        //   markerText.setHeight(30);
+
+        //**********************************************************************************************************
+
+        bitmap=createDrawableFromView(this,marker);
+        BitmapDescriptor bitmapDescriptor=BitmapDescriptorFactory.fromBitmap(bitmap);
+
+
+        List<MarkerOptions> markerOptionsList=new ArrayList<>();
+        //List<String> location=new ArrayList<>();
+
+        if(!pubs.isEmpty())
+        {
+            List<Address> addressList;
+            Geocoder geocoder = new Geocoder(this);
+            try {
+                int j = 0;
+                for(int i=0; i<pubs.size(); i++) {
+                    addressList = geocoder.getFromLocationName(pubs.get(i).getAddress(), 1);
+                    if(addressList.size()==0)
+                        continue;
+
+                    Address address = addressList.get(0);
+                    LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+
+                    markerText.setText(j+",5");
+
+                    markerOptionsList.add(j,new MarkerOptions().position(latLng).title(pubs.get(i).getAddress()).snippet("Kilka \n linijek \n opisu\n ---------------\n i jeszcze wiecej")
+                            .icon(bitmapDescriptor));
+
+                    mMap.addMarker(markerOptionsList.get(j));
+
+                    // markerOptionsList.get(i).icon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(this, closestMarker)));
+
+                    // mMap.addMarker(markerOptionsList.get(i));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+                    j++;
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
