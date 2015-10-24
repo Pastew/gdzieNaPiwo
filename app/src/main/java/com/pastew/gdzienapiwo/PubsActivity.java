@@ -87,14 +87,17 @@ public class PubsActivity extends Activity {
             tr.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
 
             TextView pubName = new TextView(this);
+            pubName.setTextAppearance(getApplicationContext(), R.style.pub_name );
             pubName.setText(pub.getName());
             tr.addView(pubName);
 
             TextView beerPrice = new TextView(this);
+            beerPrice.setTextAppearance(getApplicationContext(), R.style.beer_price );
             beerPrice.setText(Float.toString(pub.getBeerPrice()));
             tr.addView(beerPrice);
 
             TextView distance = new TextView(this);
+            distance.setTextAppearance(getApplicationContext(), R.style.distance );
             distance.setText(Integer.toString(pub.getDistance()));
             tr.addView(distance);
 

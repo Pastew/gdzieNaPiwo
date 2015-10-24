@@ -5,4 +5,19 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="pub_name" parent="@android:style/TextAppearance.Large">
+        <item name="android:textStyle">bold|italic</item>
+        <item name="android:textColor">#ff222022</item>
+    </style>
+
+    <style name="beer_price" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textStyle">bold|italic</item>
+        <item name="android:textColor">#ffff7110</item>
+    </style>
+
+    <style name="distance" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textStyle">bold|italic</item>
+        <item name="android:textColor">#ff346fff</item>
+    </style>
+
 </resources>
