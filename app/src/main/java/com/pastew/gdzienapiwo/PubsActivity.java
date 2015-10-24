@@ -3,6 +3,8 @@ package com.pastew.gdzienapiwo;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
@@ -26,6 +28,8 @@ import java.util.HashMap;
 public class PubsActivity extends Activity {
 
     private static final String[] PERKS = {"pool", "garden", "dancefloor", "television", "karaoke", "pool"};
+    private ArrayList<View> MAINTABLES = new ArrayList<>();
+    private ArrayList<View> SUBTABLES = new ArrayList<>();
     TableLayout pubsTable;
 
     @Override
@@ -44,7 +48,7 @@ public class PubsActivity extends Activity {
         //  Create json array request
         JsonArrayRequest jsonArrayRequest=new JsonArrayRequest("https://mysterious-shelf-1380.herokuapp.com/pubs",new Response.Listener<JSONArray>(){
             public void onResponse(JSONArray jsonArray){
-                ArrayList<Pub> pubs =new ArrayList<>();
+                ArrayList<Pub> pubs = new ArrayList<>();
                 // Successfully download json
                 // So parse it and populate the listview
                 for(int i=0;i<jsonArray.length();i++){
@@ -102,8 +106,16 @@ public class PubsActivity extends Activity {
             tr.addView(distance);
 
             pubsTable.addView(tr);
+            MAINTABLES.add(tr);
 
-            // ====== sub additional info =======
+            pubName.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showSubTable(v);
+                }
+            });
+
+            // ====== dropping down table -  additional info =======
             // first column of sub table
             TableRow trSub = new TableRow(this);
             LinearLayout ll1 = new LinearLayout(this);
@@ -135,7 +147,24 @@ public class PubsActivity extends Activity {
             ll3.addView(map);
 
             trSub.addView(ll3);
+
+            trSub.setVisibility(View.GONE);
             pubsTable.addView(trSub);
+            SUBTABLES.add(trSub);
+        }
+    }
+
+    private void showSubTable(View pubTextView) {
+
+        View parentTable = ((View) pubTextView.getParent());
+        int parentTableIndex = MAINTABLES.indexOf(parentTable);
+        View viewToShow = SUBTABLES.get(parentTableIndex);
+
+        for(View sub : SUBTABLES) {
+            if(sub == viewToShow)
+                viewToShow.setVisibility(SUBTABLES.get(parentTableIndex).getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+            else
+                sub.setVisibility(View.GONE);
         }
     }
 }

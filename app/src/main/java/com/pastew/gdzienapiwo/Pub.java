@@ -71,4 +71,7 @@ public class Pub {
         this.address = address;
     }
 
+    public int getId() {
+        return id;
+    }
 }
