@@ -1,6 +1,7 @@
 package com.pastew.gdzienapiwo;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 /**
  * Created by Pastew on 2015-10-24.
@@ -24,5 +25,9 @@ public class Pub {
 
     public String getName() {
         return name;
+    }
+
+    public ArrayList<BeerPrice> getBeerPrices() {
+        return beerPrices;
     }
 }
