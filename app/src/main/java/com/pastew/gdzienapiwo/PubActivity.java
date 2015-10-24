@@ -1,13 +1,13 @@
 package com.pastew.gdzienapiwo;
 
-import android.support.v7.app.ActionBarActivity;
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
 
-public class PubActivity extends ActionBarActivity {
+public class PubActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
