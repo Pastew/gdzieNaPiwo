@@ -130,6 +130,12 @@ public class PubsActivity extends Activity {
             LinearLayout ll1 = new LinearLayout(this);
             ll1.setOrientation(LinearLayout.VERTICAL);
 
+            // address
+            TextView address = new TextView(this);
+            address.setTextAppearance(getApplicationContext(), R.style.pub_address );
+            address.setText(pub.getAddress());
+            ll1.addView(address);
+
             for(HashMap.Entry<String, Boolean> entry : pub.getPerks().entrySet()){
                 String key = entry.getKey();
                 boolean value = entry.getValue();

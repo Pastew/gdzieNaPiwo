@@ -20,4 +20,9 @@
         <item name="android:textColor">#ff346fff</item>
     </style>
 
+    <style name="pub_address" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textStyle">bold|italic</item>
+        <item name="android:textColor">#ff00aaff</item>
+    </style>
+
 </resources>
