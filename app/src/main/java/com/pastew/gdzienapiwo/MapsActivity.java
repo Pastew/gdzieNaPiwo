@@ -23,6 +23,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -38,9 +43,13 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -53,7 +62,7 @@ public class MapsActivity extends FragmentActivity implements
 
     double closestDistance=10000000;
     double a,b;
-
+    Bitmap bitmap;
 
     public static final String TAG = MapsActivity.class.getSimpleName();
 
@@ -147,6 +156,7 @@ public class MapsActivity extends FragmentActivity implements
                 info.addView(title);
                 info.addView(snippet);
 
+
                 return info;
             }
         });
@@ -163,38 +173,67 @@ public class MapsActivity extends FragmentActivity implements
 
         //**********************************************************************************************************
 
+        bitmap=createDrawableFromView(this,marker);
+        BitmapDescriptor bitmapDescriptor=BitmapDescriptorFactory.fromBitmap(bitmap);
         Address address;
         LatLng latLng;
-        BitmapDescriptor bitmapMarker;
-        bitmapMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
+
 
         List<MarkerOptions> markerOptionsList=new ArrayList<>();
-        List<String> location=new ArrayList<>();
+        //List<String> location=new ArrayList<>();
 
-        location.add(0, "Biprostal, Kraków");
-        location.add(1,"AGH, Kraków");
-        location.add(2,"ul.Bytomska, Kraków");
-        location.add(3, "Warszawa");
-        location.add(4, "Sopot");
-        location.add(5, "Rzeszow");
-        location.add(6, "Bialystok");
+        List<Pub> pubList=new ArrayList<>();
+        pubList=getPubs();
+
+//        location.add(0, "Biprostal, Kraków");
+//        location.add(1,"AGH, Kraków");
+//        location.add(2,"ul.Bytomska, Kraków");
+//        location.add(3, "Warszawa");
+//        location.add(4, "Sopot");
+//        location.add(5, "Rzeszow");
+//        location.add(6, "Mielno");
+//
+//        location.add(7, "Bialystok");
+//        location.add(8, "Wadowice");
+//        location.add(9, "Kalwaria Zebrzydowska");
+//        location.add(10, "Wroclaw");
+//        location.add(11, "Katowice");
+//        location.add(12, "Tarnow");
+//        location.add(13, "Zakopane");
+//        location.add(14, "Kolobrzeg");
+//        location.add(15, "Inowroclaw");
+//        location.add(16, "Zielona Gora");
+//        location.add(17, "Dietla, Krakow");
+//        location.add(18, "Rondo Matecznego, Krakow");
+//        location.add(19, "Mogilany, Krakow");
+//        location.add(20, "Kazimierz, Krakow");
+//        location.add(21, "Jubilat, Krakow");
+//        location.add(22, "Urzednicza, Krakow");
+//        location.add(23, "Plac Wszystki Swietych, Krakow");
+//        location.add(24, "Cracovia, Krakow");
+//        location.add(25, "Radocza");
+//        location.add(26, "Dabie, Krakow");
+//        location.add(27, "Wieczysta, Krakow");
+//        location.add(28, "Zablocie, Krakow");
+//        location.add(29, "Galeria Krakowska");
+//        location.add(30, "Szczyrk");
 
 
         List<Address> addressList = null;
-        if(!location.isEmpty())
+        if(!pubList.isEmpty())
         {
             Geocoder geocoder = new Geocoder(this);
             try {
 
-                for(int i=0; i<location.size(); i++) {
-                    addressList = geocoder.getFromLocationName(location.get(i), 1);
+                for(int i=0; i<pubList.size(); i++) {
+                    addressList = geocoder.getFromLocationName(pubList.get(i).getAddress(), 1);
                     address = addressList.get(0);
                     latLng = new LatLng(address.getLatitude(), address.getLongitude());
 
                     markerText.setText(i+",5");
 
-                    markerOptionsList.add(i,new MarkerOptions().position(latLng).title(location.get(i)).snippet("Kilka \n linijek \n opisu\n ---------------\n i jeszcze wiecej")
-                            .icon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(this, marker))));
+                    markerOptionsList.add(i,new MarkerOptions().position(latLng).title(pubList.get(i).getAddress()).snippet("Kilka \n linijek \n opisu\n ---------------\n i jeszcze wiecej")
+                            .icon(bitmapDescriptor));
 
                     mMap.addMarker(markerOptionsList.get(i));
 
@@ -211,7 +250,7 @@ public class MapsActivity extends FragmentActivity implements
 
         }
 
-        closestMark(markerOptionsList, closestMarker);
+        //closestMark(markerOptionsList, closestMarker);
     }
 
 
@@ -223,8 +262,8 @@ public class MapsActivity extends FragmentActivity implements
         view.measure(displayMetrics.widthPixels, displayMetrics.heightPixels);
         view.layout(0, 0, displayMetrics.widthPixels, displayMetrics.heightPixels);
         view.buildDrawingCache();
-        Bitmap bitmap = Bitmap.createBitmap(view.getMeasuredWidth(), view.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
-
+         Bitmap  bitmap = Bitmap.createBitmap(view.getMeasuredWidth(), view.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+        bitmap.recycle();
         Canvas canvas = new Canvas(bitmap);
         view.draw(canvas);
 
@@ -401,5 +440,61 @@ public class MapsActivity extends FragmentActivity implements
 
         Log.i("ab"," "+a);
         Log.i("ab"," "+b);
+    }
+
+    ArrayList<Pub> pubs;
+    public ArrayList<Pub> getPubs(){
+
+         pubs = new ArrayList<>();
+
+        // Create request queue
+        RequestQueue requestQueue= Volley.newRequestQueue(this);
+        //  Create json array request
+        JsonArrayRequest jsonArrayRequest=new JsonArrayRequest("https://mysterious-shelf-1380.herokuapp.com/pubs",new Response.Listener<JSONArray>(){
+            public void onResponse(JSONArray jsonArray){
+
+                // Successfully download json
+                // So parse it and populate the listview
+                for(int i=0;i<jsonArray.length();i++){
+                    try {
+                        Pub pub = new Pub();
+
+                        //name, address
+                        JSONObject jsonObject=jsonArray.getJSONObject(i);
+                        pub.setName(jsonObject.getString("name"));
+                        pub.setAddress(jsonObject.getString("address"));
+
+                        //prices
+                        ArrayList<BeerPrice> beerPrices = new ArrayList<>();
+                        JSONArray beerPricesJson = jsonObject.getJSONArray("beer_prices");
+                        for(int j = 0 ; j < beerPricesJson.length() ; ++j){
+                            JSONObject beer_price = beerPricesJson.getJSONObject(j);
+                            float price = (float) beer_price.getDouble("price");
+                            int votes = beer_price.getInt("votes");
+                            beerPrices.add(new BeerPrice(price, votes));
+                        }
+
+                        pub.setBeerPrices(beerPrices);
+                        // perks
+                        HashMap<String,Boolean> perks = new HashMap<>();
+                        for(String perk : Global.PERKS) {
+                            perks.put(perk, jsonObject.getBoolean(perk));
+                        }
+                        pub.setPerks(perks);
+
+                        pubs.add(pub);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                Log.e("Error", "Unable to parse json array");
+            }
+        });
+        return pubs;
     }
 }
