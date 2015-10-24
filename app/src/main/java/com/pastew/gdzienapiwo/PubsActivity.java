@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.TranslateAnimation;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
@@ -161,8 +162,10 @@ public class PubsActivity extends Activity {
         View viewToShow = SUBTABLES.get(parentTableIndex);
 
         for(View sub : SUBTABLES) {
-            if(sub == viewToShow)
+            if(sub == viewToShow) {
                 viewToShow.setVisibility(SUBTABLES.get(parentTableIndex).getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+
+            }
             else
                 sub.setVisibility(View.GONE);
         }
