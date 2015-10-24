@@ -10,4 +10,8 @@
     <string name="title_activity_pubs">PubsActivity</string>
     <string name="title_activity_add_beer">AddBeerActivity</string>
     <string name="pub_label">Pub</string>
+    <string name="title_activity_add_pub">AddPubActivit</string>
+    <string name="pub_name_label">Nazwa pubu</string>
+    <string name="address">Adres</string>
+    <string name="add_pub">Dodaj pub</string>
 </resources>

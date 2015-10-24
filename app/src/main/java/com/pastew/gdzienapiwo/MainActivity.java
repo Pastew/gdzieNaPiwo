@@ -30,6 +30,7 @@ public class MainActivity extends Activity {
     Button pubButton;
     Button pubsButton;
     Button addBeerButton;
+    Button addPubButton;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +48,7 @@ public class MainActivity extends Activity {
         pubButton = (Button) findViewById(R.id.pub_button);
         pubsButton = (Button) findViewById(R.id.pubs_button);
         addBeerButton = (Button) findViewById(R.id.add_beer_test_button);
+        addPubButton = (Button) findViewById(R.id.add_pub_test_button);
 
         getBeersButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,6 +78,14 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(MainActivity.this, AddBeerActivity.class);
+                startActivity(i);
+            }
+        });
+
+        addPubButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(MainActivity.this, AddPubActivity.class);
                 startActivity(i);
             }
         });

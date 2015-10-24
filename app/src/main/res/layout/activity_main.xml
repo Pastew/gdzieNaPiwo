@@ -47,6 +47,14 @@
         android:text="Zamelduj piwko">
     </Button>
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/add_pub_test_button"
+        android:layout_gravity="center_horizontal"
+        android:text="Dodaj pub">
+    </Button>
+
     <ListView
         android:id="@+id/listv"
         android:layout_width="match_parent"
