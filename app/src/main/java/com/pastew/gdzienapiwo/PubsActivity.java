@@ -24,6 +24,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
 
@@ -37,6 +39,7 @@ public class PubsActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pubs);
+        pubsTable = (TableLayout) findViewById(R.id.pubs_table);
 
         showPubs();
     }
@@ -95,81 +98,104 @@ public class PubsActivity extends Activity {
     }
 
     private void populateTable(ArrayList<Pub> pubs) {
-        pubsTable = (TableLayout) findViewById(R.id.pubs_table);
+
+        Collections.sort(pubs, new Comparator<Pub>() {
+            public int compare(Pub b1, Pub b2) {
+                if (b1.getBeerPrice() > b2.getBeerPrice())
+                    return 1;
+                if (b1.getBeerPrice() < b2.getBeerPrice())
+                    return -1;
+                return 0;
+            }
+        });
 
         for (Pub pub : pubs) {
-            TableRow tr = new TableRow(this);
-            tr.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+            if(pub.getBeerPrice()>0.1)
+                addPub(pub);
+        }
 
-            TextView pubName = new TextView(this);
-            pubName.setTextAppearance(getApplicationContext(), R.style.pub_name );
-            pubName.setText(pub.getName());
-            tr.addView(pubName);
+        for (Pub pub : pubs) {
+            if(pub.getBeerPrice()<0.1)
+                addPub(pub);
+        }
+    }
 
-            TextView beerPrice = new TextView(this);
-            beerPrice.setTextAppearance(getApplicationContext(), R.style.beer_price );
-            beerPrice.setText(Float.toString(pub.getBeerPrice()));
-            tr.addView(beerPrice);
+    private void addPub(Pub pub) {
+        TableRow tr = new TableRow(this);
+        tr.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
 
-            TextView distance = new TextView(this);
-            distance.setTextAppearance(getApplicationContext(), R.style.distance );
-            distance.setText(Integer.toString(pub.getDistance()));
-            tr.addView(distance);
+        TextView pubName = new TextView(this);
+        pubName.setTextAppearance(getApplicationContext(), R.style.pub_name);
+        pubName.setText(pub.getName());
+        tr.addView(pubName);
 
-            pubsTable.addView(tr);
-            MAINTABLES.add(tr);
+        TextView beerPrice = new TextView(this);
+        beerPrice.setTextAppearance(getApplicationContext(), R.style.beer_price);
+        float price = pub.getBeerPrice();
+        if(price < 0.1)
+            beerPrice.setText("-");
+        else
+            beerPrice.setText(Float.toString(price));
+        tr.addView(beerPrice);
 
-            pubName.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showSubTable(v);
-                }
-            });
+        TextView distance = new TextView(this);
+        distance.setTextAppearance(getApplicationContext(), R.style.distance );
+        distance.setText(Integer.toString(pub.getDistance()));
+        tr.addView(distance);
 
-            // ====== dropping down table -  additional info =======
-            // first column of sub table
-            TableRow trSub = new TableRow(this);
-            LinearLayout ll1 = new LinearLayout(this);
-            ll1.setOrientation(LinearLayout.VERTICAL);
+        pubsTable.addView(tr);
+        MAINTABLES.add(tr);
 
-            // address
-            TextView address = new TextView(this);
-            address.setTextAppearance(getApplicationContext(), R.style.pub_address );
-            address.setText(pub.getAddress());
-            ll1.addView(address);
-
-            for(HashMap.Entry<String, Boolean> entry : pub.getPerks().entrySet()){
-                String key = entry.getKey();
-                boolean value = entry.getValue();
-
-                //don't add empty perks
-                //if(!value)
-                  //  continue;
-
-                CheckBox perk = new CheckBox(this);
-                perk.setClickable(false);
-                perk.setText(key); // TODO dodaj do strings.xml
-                perk.setChecked(value);
-                ll1.addView(perk);
+        pubName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSubTable(v);
             }
+        });
 
-            trSub.addView(ll1);
+        // ====== dropping down table -  additional info =======
+        // first column of sub table
+        TableRow trSub = new TableRow(this);
+        LinearLayout ll1 = new LinearLayout(this);
+        ll1.setOrientation(LinearLayout.VERTICAL);
 
-            // third col - map link
-            LinearLayout ll3 = new LinearLayout(this);
-            ll3.setOrientation(LinearLayout.VERTICAL);
+        // address
+        TextView address = new TextView(this);
+        address.setTextAppearance(getApplicationContext(), R.style.pub_address );
+        address.setText(pub.getAddress());
+        ll1.addView(address);
+
+        for(HashMap.Entry<String, Boolean> entry : pub.getPerks().entrySet()){
+            String key = entry.getKey();
+            boolean value = entry.getValue();
+
+            //don't add empty perks
+            //if(!value)
+            //  continue;
+
+            CheckBox perk = new CheckBox(this);
+            perk.setClickable(false);
+            perk.setText(keyToString(key));
+            perk.setChecked(value);
+            ll1.addView(perk);
+        }
+
+        trSub.addView(ll1);
+
+        // third col - map link
+        LinearLayout ll3 = new LinearLayout(this);
+        ll3.setOrientation(LinearLayout.VERTICAL);
 
             /*
             TextView map = new TextView(this);
             map.setText("MAP");
             ll3.addView(map);
 */
-            trSub.addView(ll3);
+        trSub.addView(ll3);
 
-            trSub.setVisibility(View.GONE);
-            pubsTable.addView(trSub);
-            SUBTABLES.add(trSub);
-        }
+        trSub.setVisibility(View.GONE);
+        pubsTable.addView(trSub);
+        SUBTABLES.add(trSub);
     }
 
     private void showSubTable(View pubTextView) {
@@ -181,10 +207,17 @@ public class PubsActivity extends Activity {
         for(View sub : SUBTABLES) {
             if(sub == viewToShow) {
                 viewToShow.setVisibility(SUBTABLES.get(parentTableIndex).getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
-
             }
             else
                 sub.setVisibility(View.GONE);
         }
+    }
+
+    private String keyToString(String key) {
+        for(int i = 0 ; i < Global.PERKS.length ; ++i){
+            if ( key.equals(Global.PERKS[i]))
+                return Global.PERKS_STRING[i];
+        }
+        return "?";
     }
 }
