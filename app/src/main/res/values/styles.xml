@@ -35,4 +35,9 @@
         <item name="android:textColor">#727272</item>
     </style>
 
+    <style name="votes" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textStyle">bold|italic</item>
+        <item name="android:textColor">#795548</item>
+    </style>
+
 </resources>

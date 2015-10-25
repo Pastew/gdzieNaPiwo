@@ -161,9 +161,22 @@ public class PubsActivity extends Activity {
 
         // address
         TextView address = new TextView(this);
-        address.setTextAppearance(getApplicationContext(), R.style.pub_address );
+        address.setTextAppearance(getApplicationContext(), R.style.pub_address);
         address.setText(pub.getAddress());
         ll1.addView(address);
+
+
+        LinearLayout perksAndVotes = new LinearLayout(this);
+        perksAndVotes.setOrientation(LinearLayout.HORIZONTAL);
+        ll1.addView(perksAndVotes);
+
+        LinearLayout perks = new LinearLayout(this);
+        perks.setOrientation(LinearLayout.VERTICAL);
+        perksAndVotes.addView(perks);
+
+        LinearLayout votes = new LinearLayout(this);
+        votes.setOrientation(LinearLayout.VERTICAL);
+        perksAndVotes.addView(votes);
 
         for(HashMap.Entry<String, Boolean> entry : pub.getPerks().entrySet()){
             String key = entry.getKey();
@@ -177,21 +190,39 @@ public class PubsActivity extends Activity {
             perk.setClickable(false);
             perk.setText(keyToString(key));
             perk.setChecked(value);
-            ll1.addView(perk);
+            perks.addView(perk);
         }
-
         trSub.addView(ll1);
 
-        // third col - map link
-        LinearLayout ll3 = new LinearLayout(this);
-        ll3.setOrientation(LinearLayout.VERTICAL);
+        // second col - prices/votes
+        LinearLayout ll2 = new LinearLayout(this);
+        ll2.setOrientation(LinearLayout.VERTICAL);
 
-            /*
-            TextView map = new TextView(this);
-            map.setText("MAP");
-            ll3.addView(map);
-*/
-        trSub.addView(ll3);
+        ArrayList<BeerPrice> beerPrices = pub.getBeerPrices();
+        Collections.sort(beerPrices, new Comparator<BeerPrice>() {
+            public int compare(BeerPrice b1, BeerPrice b2) {
+                if (b1.getVotes() > b2.getVotes())
+                    return -1;
+                if (b1.getVotes() < b2.getVotes())
+                    return 1;
+                return 0;
+            }
+        });
+
+        for(int i = 0 ; i < 3 && i < beerPrices.size(); ++i) {
+            BeerPrice bp = beerPrices.get(i);
+
+            TextView v = new TextView(getApplicationContext());
+            v.setText(bp.getPrice() + getString(R.string.pln) + bp.getVotes() + getString(R.string.votes));
+            v.setTextAppearance(getApplicationContext(), R.style.votes);
+            votes.addView(v);
+        }
+        /*
+        TextView map = new TextView(this);
+        map.setText("MAP");
+        ll3.addView(map);
+        */
+        trSub.addView(ll2);
 
         trSub.setVisibility(View.GONE);
         pubsTable.addView(trSub);
