@@ -328,7 +328,8 @@ public class MapsActivity extends FragmentActivity implements
         // Create request queue
         RequestQueue requestQueue= Volley.newRequestQueue(this);
         //  Create json array request
-        JsonArrayRequest jsonArrayRequest=new JsonArrayRequest("https://mysterious-shelf-1380.herokuapp.com/pubs",new Response.Listener<JSONArray>(){
+        // todo
+        JsonArrayRequest jsonArrayRequest=new JsonArrayRequest("https://mysterious-shelf-1380.herokuapp.com/pubs/?x="+a+"&y="+b,new Response.Listener<JSONArray>(){
             public void onResponse(JSONArray jsonArray){
 
                 // Successfully download json
@@ -417,7 +418,7 @@ public class MapsActivity extends FragmentActivity implements
         View closestMarker = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.closest_marker_layout, null);
 
         TextView markerText = (TextView) marker.findViewById(R.id.marker_text);
-        // markerText.setText("27");
+
 
         int height_in_pixels = markerText.getLineCount() * markerText.getLineHeight(); //approx height text
         //   markerText.setHeight(30);
@@ -445,9 +446,12 @@ public class MapsActivity extends FragmentActivity implements
                     Address address = addressList.get(0);
                     LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
 
-                    markerText.setText(j+",5");
+                    markerText.setText("50");
+                    
 
-                    markerOptionsList.add(j,new MarkerOptions().position(latLng).title(pubs.get(i).getAddress()).snippet("Kilka \n linijek \n opisu\n ---------------\n i jeszcze wiecej")
+
+                    markerOptionsList.add(j,new MarkerOptions().position(latLng).title(""+pubs.get(i).getBeerPrice()).snippet(""+pubs.get(i).getName()+"\n"+
+                            pubs.get(i).getAddress()+"\n")
                             .icon(bitmapDescriptor));
 
                     mMap.addMarker(markerOptionsList.get(j));
@@ -457,6 +461,8 @@ public class MapsActivity extends FragmentActivity implements
                     // mMap.addMarker(markerOptionsList.get(i));
                     mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
                     j++;
+
+                    if(j==4) return;
                 }
 
             } catch (IOException e) {
