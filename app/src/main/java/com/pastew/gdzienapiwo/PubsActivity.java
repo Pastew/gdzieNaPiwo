@@ -140,7 +140,7 @@ public class PubsActivity extends Activity {
 
         TextView distance = new TextView(this);
         distance.setTextAppearance(getApplicationContext(), R.style.distance );
-        distance.setText(Integer.toString(pub.getDistance()));
+        distance.setText(pub.getDistance());
         tr.addView(distance);
 
         pubsTable.addView(tr);
