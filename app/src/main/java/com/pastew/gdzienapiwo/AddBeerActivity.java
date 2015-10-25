@@ -69,7 +69,13 @@ public class AddBeerActivity extends Activity {
         if(pubId == -1)
             return;
 
-        float price = Float.parseFloat(priceTextView.getText().toString());
+        String priceStr = priceTextView.getText().toString();
+        if(priceStr.length()==0) {
+            Toast.makeText(getApplicationContext(), "Halo, halo. Brakuje ceny.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        float price = Float.parseFloat(priceStr);
 
         // Create request queue
         RequestQueue requestQueue= Volley.newRequestQueue(this);
@@ -91,8 +97,8 @@ public class AddBeerActivity extends Activity {
 
         JsonObjectRequest  jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, "https://mysterious-shelf-1380.herokuapp.com/beers/add", param, new Response.Listener<JSONObject>(){
             public void onResponse(JSONObject response){
-                Toast.makeText(getApplicationContext(), "Dodalem piwko", Toast.LENGTH_LONG).show();
-                finish();
+                Toast.makeText(getApplicationContext(), "Dodalem piwko", Toast.LENGTH_SHORT).show();
+                //finish();
             }
         }, new Response.ErrorListener() {
             @Override
