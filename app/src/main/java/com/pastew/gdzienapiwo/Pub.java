@@ -57,8 +57,8 @@ public class Pub {
         this.perks = perks;
     }
 
-    public int getDistance() {
-        return 100;
+    public String getDistance() {
+        return " ";
     }
 
     public void setName(String name) {
