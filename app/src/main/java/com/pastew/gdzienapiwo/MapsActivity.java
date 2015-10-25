@@ -329,7 +329,7 @@ public class MapsActivity extends FragmentActivity implements
         RequestQueue requestQueue= Volley.newRequestQueue(this);
         //  Create json array request
         // todo
-        JsonArrayRequest jsonArrayRequest=new JsonArrayRequest("https://mysterious-shelf-1380.herokuapp.com/pubs/?x="+a+"&y="+b,new Response.Listener<JSONArray>(){
+        JsonArrayRequest jsonArrayRequest=new JsonArrayRequest("https://mysterious-shelf-1380.herokuapp.com/pubs/nearby/?x="+a+"&y="+b,new Response.Listener<JSONArray>(){
             public void onResponse(JSONArray jsonArray){
 
                 // Successfully download json
@@ -415,18 +415,16 @@ public class MapsActivity extends FragmentActivity implements
 
         //********************************************* Ustawienia MARKERA.png **************************
         View marker = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.custom_marker_layout, null);
-        View closestMarker = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.closest_marker_layout, null);
 
-        TextView markerText = (TextView) marker.findViewById(R.id.marker_text);
+        TextView markerText=(TextView) marker.findViewById(R.id.marker_text);
 
 
-        int height_in_pixels = markerText.getLineCount() * markerText.getLineHeight(); //approx height text
+       // int height_in_pixels = markerText.getLineCount() * markerText.getLineHeight(); //approx height text
         //   markerText.setHeight(30);
 
         //**********************************************************************************************************
 
-        bitmap=createDrawableFromView(this,marker);
-        BitmapDescriptor bitmapDescriptor=BitmapDescriptorFactory.fromBitmap(bitmap);
+
 
 
         List<MarkerOptions> markerOptionsList=new ArrayList<>();
@@ -439,6 +437,11 @@ public class MapsActivity extends FragmentActivity implements
             try {
                 int j = 0;
                 for(int i=0; i<pubs.size(); i++) {
+
+                    markerText.setText(pubs.get(i).getBeerPrice()+"");
+                    bitmap=createDrawableFromView(this,marker);
+                    BitmapDescriptor bitmapDescriptor=BitmapDescriptorFactory.fromBitmap(bitmap);
+
                     addressList = geocoder.getFromLocationName(pubs.get(i).getAddress(), 1);
                     if(addressList.size()==0)
                         continue;
@@ -446,8 +449,9 @@ public class MapsActivity extends FragmentActivity implements
                     Address address = addressList.get(0);
                     LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
 
-                    markerText.setText("50");
-                    
+
+
+                    markerText.setText(pubs.get(i).getBeerPrice()+"");
 
 
                     markerOptionsList.add(j,new MarkerOptions().position(latLng).title(""+pubs.get(i).getBeerPrice()).snippet(""+pubs.get(i).getName()+"\n"+
