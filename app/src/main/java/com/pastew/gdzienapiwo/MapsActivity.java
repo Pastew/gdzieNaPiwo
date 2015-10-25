@@ -425,7 +425,7 @@ public class MapsActivity extends FragmentActivity implements
         //**********************************************************************************************************
 
 
-
+        int priceParser;
 
         List<MarkerOptions> markerOptionsList=new ArrayList<>();
         //List<String> location=new ArrayList<>();
@@ -438,7 +438,19 @@ public class MapsActivity extends FragmentActivity implements
                 int j = 0;
                 for(int i=0; i<pubs.size(); i++) {
 
-                    markerText.setText(pubs.get(i).getBeerPrice()+"" );
+                    priceParser=(int)pubs.get(i).getBeerPrice();
+
+                    if(pubs.get(i).getBeerPrice()!=0.0) {
+
+                        if(priceParser==pubs.get(i).getBeerPrice()){
+                            markerText.setText(priceParser+"");
+                        }
+                        else
+                        markerText.setText(pubs.get(i).getBeerPrice() + "");
+                    }
+                    else
+                        markerText.setText("-");
+
                     bitmap=createDrawableFromView(this,marker);
                     BitmapDescriptor bitmapDescriptor=BitmapDescriptorFactory.fromBitmap(bitmap);
 
@@ -450,15 +462,27 @@ public class MapsActivity extends FragmentActivity implements
                     LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
 
 
+                    if(pubs.get(i).getBeerPrice()!=0.0) {
 
-                    markerText.setText(pubs.get(i).getBeerPrice()+"");
 
+                        markerOptionsList.add(j, new MarkerOptions().position(latLng).title("" + pubs.get(i).getBeerPrice()).snippet("" + pubs.get(i).getName() + "\n" +
+                                pubs.get(i).getAddress() + "\n")
+                                .icon(bitmapDescriptor));
 
-                    markerOptionsList.add(j,new MarkerOptions().position(latLng).title(""+pubs.get(i).getBeerPrice()).snippet(""+pubs.get(i).getName()+"\n"+
-                            pubs.get(i).getAddress()+"\n")
-                            .icon(bitmapDescriptor));
+                    }
+
+                    else {
+
+                        markerOptionsList.add(j, new MarkerOptions().position(latLng).title("Badz pierwszy i dodaj cene piwka!").snippet("" + pubs.get(i).getName() + "\n" +
+                                pubs.get(i).getAddress() + "\n")
+                                .icon(bitmapDescriptor));
+
+                    }
+
 
                     mMap.addMarker(markerOptionsList.get(j));
+
+
 
                     // markerOptionsList.get(i).icon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(this, closestMarker)));
 
@@ -466,7 +490,10 @@ public class MapsActivity extends FragmentActivity implements
                     mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
                     j++;
 
-                    if(j==4) return;
+
+                    if(j==10) return;
+
+                   // mMap.clear();
                 }
 
             } catch (IOException e) {
