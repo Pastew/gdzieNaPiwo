@@ -438,7 +438,7 @@ public class MapsActivity extends FragmentActivity implements
                 int j = 0;
                 for(int i=0; i<pubs.size(); i++) {
 
-                    markerText.setText(pubs.get(i).getBeerPrice()+"");
+                    markerText.setText(pubs.get(i).getBeerPrice()+"" );
                     bitmap=createDrawableFromView(this,marker);
                     BitmapDescriptor bitmapDescriptor=BitmapDescriptorFactory.fromBitmap(bitmap);
 
