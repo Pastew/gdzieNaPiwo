@@ -18,4 +18,6 @@
     <string name="map">Piwo w okolicy</string>
     <string name="show_pubs">Wszystkie puby w mieście</string>
     <string name="title">Gdzie na piwo</string>
+    <string name="votes">" głosów"</string>
+    <string name="pln">"PLN : "</string>
 </resources>
